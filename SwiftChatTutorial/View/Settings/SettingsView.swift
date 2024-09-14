@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SettingsView: View {
-    
     var body: some View {
         ZStack{
 //            Color(.systemGroupedBackground)
@@ -40,7 +39,7 @@ struct SettingsView: View {
                             
                             Section {
                                 Button(action: {
-                                    print("Form submitted")
+                                    AuthViewModel.shared.signOut()
                                 }) {
                                     Text("Log Out")
                                         .font(.headline)
