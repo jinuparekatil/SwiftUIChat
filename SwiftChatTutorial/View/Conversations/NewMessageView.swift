@@ -8,11 +8,32 @@
 import SwiftUI
 
 struct NewMessageView: View {
+    @Binding var showChatView: Bool
+    @Environment(\.dismiss) var dismiss
+    @State private var searchText = ""
+    @State private var isEditing = false
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            SearchBar(text: $searchText, isEditing: $isEditing)
+                .onTapGesture {
+                    isEditing.toggle()
+                }
+                .padding()
+            VStack(alignment: .leading) {
+                ForEach((0 ... 10) ,id: \.self){_ in
+                    Button(action: {
+                        showChatView.toggle()
+                        dismiss()
+                    }, label: {
+                        UserCell()
+                    })
+                    
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    NewMessageView()
+    NewMessageView(showChatView: .constant(true))
 }

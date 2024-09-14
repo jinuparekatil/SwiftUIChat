@@ -8,8 +8,51 @@
 import SwiftUI
 
 struct SettingsView: View {
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack{
+//            Color(.systemGroupedBackground)
+//                .ignoresSafeArea()
+            NavigationStack {
+                Form {
+                    // Profile Section
+                    Section {
+                        HStack {
+                            // Wrap NavigationLink inside HStack to hide the indicator
+                            NavigationLink(destination: EditProfileView()) {
+                                SettingsHeaderView()
+                            }
+
+                        }
+                      
+                    }
+                
+                           
+                            // Settings Option
+                            Section {
+                                ForEach(SettingCellsViewModel.allCases , id: \.self) { viewModel in
+                                    SettingsCell(viewModel: viewModel)
+
+                                }
+                            }
+                            
+            
+                            
+                            Section {
+                                Button(action: {
+                                    print("Form submitted")
+                                }) {
+                                    Text("Log Out")
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.red)
+                                }
+                                
+                            }
+                        }
+                        .navigationTitle("Settings")
+                    }
+        }
     }
 }
 

@@ -9,7 +9,33 @@ import SwiftUI
 
 struct MainTabView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView {
+            NavigationStack {
+                ConversationsView()
+                    .navigationTitle("Conversations")
+            }
+            .tabItem {
+                Image(systemName: "bubble.left")
+            }
+            
+            NavigationStack {
+                ChannelsView()
+                    .navigationTitle("Channels")
+            }
+            .tabItem {
+                Image(systemName: "bubble.left.and.bubble.right")
+            }
+            
+            NavigationStack {
+                SettingsView()
+                    .navigationTitle("Settings")
+            }
+            .tabItem {
+                Image(systemName: "gear")
+            }
+        }
+
+
     }
 }
 

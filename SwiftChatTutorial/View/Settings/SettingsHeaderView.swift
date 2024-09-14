@@ -9,7 +9,22 @@ import SwiftUI
 
 struct SettingsHeaderView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack{
+            Image("venom-7")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 64,height: 64)
+                .clipShape(Circle())
+            
+            VStack(alignment: .leading) {
+                Text("Eddie Broke")
+                    .font(.headline)
+                Text("Available")
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+            }
+            
+        }
     }
 }
 
