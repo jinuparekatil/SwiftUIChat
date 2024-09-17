@@ -14,6 +14,7 @@ class AuthViewModel : NSObject,ObservableObject {
     @Published var didAuthenticateUser: Bool = false
     @Published var userSession: FirebaseAuth.User?
     private var tempCurrentUser : FirebaseAuth.User?
+    @Published var currentUser: User?
     
     static let shared = AuthViewModel()
     
@@ -30,8 +31,9 @@ class AuthViewModel : NSObject,ObservableObject {
             }
             guard let user = result?.user else { return }
             self.userSession = user
-            self.tempCurrentUser = user
-            self.didAuthenticateUser = true
+//            self.tempCurrentUser = user
+//            self.didAuthenticateUser = true
+            self.fetchUser()
         }
     }
     func register(withEmail email: String, password: String, fullname: String, username: String) {
@@ -48,7 +50,7 @@ class AuthViewModel : NSObject,ObservableObject {
                 "username": username,
                 "fullname": fullname
             ]
-            Firestore.firestore().collection("users").document(user.uid).setData(data) { error in
+            COLLECTION_USERS.document(user.uid).setData(data) { error in
                 if let error = error {
                     print("Failed to update user info in Firestore: \(error.localizedDescription)")
                 } else {
@@ -61,18 +63,12 @@ class AuthViewModel : NSObject,ObservableObject {
     func uploadProfileImage(_ image:UIImage) {
         ImageUploader.uploadImage(image: image) { imageUrl in
             guard let uid = self.tempCurrentUser?.uid else {
-                #if DEBUG
-                    print("DEBUG: failed to setup temp user  ")
-                #endif
-
                 return
             }
-            Firestore.firestore().collection("users").document(uid).updateData(["profileImageUrl":imageUrl]) { _ in
-
-            #if DEBUG
-              print("DEBUG: Successfully updated user data..")
+            COLLECTION_USERS.document(uid).updateData(["profileImageUrl":imageUrl]) { _ in
                 self.userSession = self.tempCurrentUser
-            #endif
+
+     
             }
         }
     }
@@ -89,9 +85,16 @@ class AuthViewModel : NSObject,ObservableObject {
     
     func fetchUser() {
         guard let uid  = userSession?.uid else { return }
-        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, _ in
+        COLLECTION_USERS.document(uid).getDocument { snapshot, _ in
             guard let data = snapshot?.data() else { return }
-            print(data)
+            do {
+                guard let user = try snapshot?.data(as: User.self) else { return }
+                self.currentUser = user
+            } catch {
+                print(error.localizedDescription)
+
+
+            }
         }
     }
 }

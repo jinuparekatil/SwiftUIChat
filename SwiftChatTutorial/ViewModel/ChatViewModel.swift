@@ -6,29 +6,46 @@
 //
 
 import Foundation
+import Firebase
 
 class ChatViewModel: ObservableObject {
     @Published var  messages = [Message]()
-    init() {
-        self.messages = mockMessages
+    let user: User
+    init(user: User) {
+        self.user = user
+        fetchMessages()
     }
-    
-    var mockMessages: [Message] {
-        [
-            .init(isFromCurrentUser: true, messageText: "What's up man"),
-            .init(isFromCurrentUser: true, messageText: "Not much ,how are you?"),
-            .init(isFromCurrentUser: false, messageText: "I'm doing fine, having building this app."),
-            .init(isFromCurrentUser: true, messageText: "Are you learning alot?"),
-            .init(isFromCurrentUser: false, messageText: "Yeah Iam, I love this course."),
-            .init(isFromCurrentUser: true, messageText: "What's up man"),
-            .init(isFromCurrentUser: false, messageText: "That's awesome, I am glad I bought it."),
-            .init(isFromCurrentUser: false, messageText: "Talk to you later."),
-            .init(isFromCurrentUser: true, messageText: " good night :)"),
-        ]
+    func fetchMessages() {
+        guard let currentUid = AuthViewModel.shared.userSession?.uid else { return }
+        guard let chatPartnerId = user.id else { return }
+        
+       let query =  COLLECTION_MESSAGES.document(currentUid).collection(chatPartnerId)
+        query.getDocuments{ snapshot, error in
+            guard let documents = snapshot?.documents else { return }
+            self.messages = documents.compactMap({ try? $0.data(as: Message.self)})
+            
+            print(self.messages)
+        }
     }
-    
+   
     func sendMessage(_ messageText: String){
-        let message = Message(isFromCurrentUser: true, messageText: messageText)
-        self.messages.append(message)
+        guard let currentUid = AuthViewModel.shared.userSession?.uid else { return }
+        guard let chatPartnerId = user.id else { return }
+        
+        let currentUserRef = COLLECTION_MESSAGES.document(currentUid).collection(chatPartnerId).document()
+        
+        let chatPartnerRef =  COLLECTION_MESSAGES.document(chatPartnerId).collection(currentUid)
+        
+        let messageId = currentUserRef.documentID
+        
+        let data: [String: Any] = [ "text": messageText,
+                                    "fromId": currentUid,
+                                    "toId": chatPartnerId,
+                                    "read": false,
+                                    "timestamp": Timestamp(date: Date())
+        ]
+        
+        currentUserRef.setData(data)
+        chatPartnerRef.document(messageId).setData(data)
     }
 }

@@ -12,6 +12,8 @@ struct NewMessageView: View {
     @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
     @State private var isEditing = false
+    @Binding var user: User?
+    @ObservedObject var viewModel = NewMessageViewModel()
     var body: some View {
         ScrollView {
             SearchBar(text: $searchText, isEditing: $isEditing)
@@ -20,12 +22,13 @@ struct NewMessageView: View {
                 }
                 .padding()
             VStack(alignment: .leading) {
-                ForEach((0 ... 10) ,id: \.self){_ in
+                ForEach(viewModel.users){ user in
                     Button(action: {
                         showChatView.toggle()
+                        self.user = user
                         dismiss()
                     }, label: {
-                        UserCell()
+                        UserCell(user: user)
                     })
                     
                 }
@@ -34,6 +37,6 @@ struct NewMessageView: View {
     }
 }
 
-#Preview {
-    NewMessageView(showChatView: .constant(true))
-}
+//#Preview {
+//    NewMessageView(showChatView: .constant(true))
+//}

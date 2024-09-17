@@ -8,31 +8,37 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject var viewmodel: AuthViewModel
     var body: some View {
-        TabView {
-            NavigationStack {
-                ConversationsView()
-                    .navigationTitle("Conversations")
+        if let user =  viewmodel.currentUser {
+            TabView {
+                NavigationStack {
+                    ConversationsView()
+                        .navigationTitle("Conversations")
+                }
+                .tabItem {
+                    Image(systemName: "bubble.left")
+                }
+                
+                NavigationStack {
+                    ChannelsView()
+                        .navigationTitle("Channels")
+                }
+                .tabItem {
+                    Image(systemName: "bubble.left.and.bubble.right")
+                }
+                
+                NavigationStack {
+                    SettingsView(user: user)
+                        .navigationTitle("Settings")
+                }
+                .tabItem {
+                    Image(systemName: "gear")
+                }
             }
-            .tabItem {
-                Image(systemName: "bubble.left")
-            }
-            
-            NavigationStack {
-                ChannelsView()
-                    .navigationTitle("Channels")
-            }
-            .tabItem {
-                Image(systemName: "bubble.left.and.bubble.right")
-            }
-            
-            NavigationStack {
-                SettingsView()
-                    .navigationTitle("Settings")
-            }
-            .tabItem {
-                Image(systemName: "gear")
-            }
+        }
+        else {
+            // Failed to show current user
         }
 
 

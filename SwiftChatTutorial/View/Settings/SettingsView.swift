@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct SettingsView: View {
+    let user : User
+    init(user: User){
+        self.user = user
+    }
     var body: some View {
         ZStack{
 //            Color(.systemGroupedBackground)
@@ -19,7 +23,7 @@ struct SettingsView: View {
                         HStack {
                             // Wrap NavigationLink inside HStack to hide the indicator
                             NavigationLink(destination: EditProfileView()) {
-                                SettingsHeaderView()
+                                SettingsHeaderView(user: user)
                             }
 
                         }
@@ -55,6 +59,6 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView()
-}
+//#Preview {
+//    SettingsView()
+//}

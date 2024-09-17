@@ -6,18 +6,23 @@
 //
 
 import SwiftUI
-
+import Kingfisher
 struct SettingsHeaderView: View {
+    var user: User
+    init(user: User) {
+        self.user = user
+    }
     var body: some View {
         HStack{
-            Image("venom-7")
+            KFImage(URL(string: user.profileImageUrl))
                 .resizable()
                 .scaledToFill()
                 .frame(width: 64,height: 64)
                 .clipShape(Circle())
+                .padding(.leading)
             
             VStack(alignment: .leading) {
-                Text("Eddie Broke")
+                Text(user.fullname)
                     .font(.headline)
                 Text("Available")
                     .font(.subheadline)
@@ -27,7 +32,7 @@ struct SettingsHeaderView: View {
         }
     }
 }
-
-#Preview {
-    SettingsHeaderView()
-}
+//
+//#Preview {
+//    SettingsHeaderView()
+//}
