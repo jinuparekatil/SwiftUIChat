@@ -19,6 +19,8 @@ struct ChatView: View {
     var body: some View {
         VStack {
             //messages
+            ScrollViewReader { proxy in
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     ForEach(viewModel.messages) {message in
@@ -26,6 +28,15 @@ struct ChatView: View {
                     }
                 }
             }
+            .onChange(of: viewModel.messages.count) { _,_ in
+                               // Scroll to the bottom when a new message is added
+                               if let lastMessage = viewModel.messages.last {
+                                   withAnimation {
+                                       proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                   }
+                               }
+                           }
+                       }
             //input view
             CustomInputView(text: $messageText,action: sendMeassage)
         }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MessageView: View {
     let viewmodel: MessageViewModel
@@ -25,7 +26,7 @@ struct MessageView: View {
                 
             } else {
                 HStack(alignment: .bottom) {
-                    Image("venom-7")
+                    KFImage(viewmodel.profileImageUrl)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 32, height: 32)
